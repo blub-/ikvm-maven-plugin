@@ -1,6 +1,6 @@
 # ikvm-maven-plugin
 
-# This plugin is a fork from samskivert/ikvm-maven-plugin.
+//This plugin is a fork from samskivert/ikvm-maven-plugin.
 
 This Maven plugin runs IKVM on a collection of Java jar files (defined by the
 dependencies in the POM that includes this plugin).
