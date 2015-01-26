@@ -53,14 +53,6 @@ public class IkvmMavenMojo extends AbstractMojo
     public File dllPath;
 
     /**
-     * Indicates that IKVM should be run via Mono rather than run directly as an executable. The
-     * plugin defaults to running IKVM directly if we are running on Windows and using Mono
-     * otherwise (on Mac and Linux), but this can force the use of Mono on Windows.
-     * @parameter expression="${force.mono}" default-value="false"
-     */
-    public boolean forceMono;
-
-    /**
      * Additional arguments to pass to IKVM.
      * @parameter
      */
@@ -175,20 +167,15 @@ public class IkvmMavenMojo extends AbstractMojo
 
         // create the command line that executes ikvmc.exe
         Commandline cli;
+
         // determine whether to run ikvmc.exe directly or to run via mono
-        if (!forceMono && System.getProperty("os.name").contains("Windows")) {
-            cli = new Commandline(ikvmcPath.getAbsolutePath());
-        } else {
-            cli = new Commandline("mono");
-            cli.createArgument().setValue(ikvmcPath.getAbsolutePath());
-        }
+        cli = new Commandline(ikvmcPath.getAbsolutePath());
 
         // add our standard args
         List<String> stdArgs = new ArrayList<String>();
-        stdArgs.add("-nostdlib");
         stdArgs.add("-target:library");
         for (String arg : stdArgs) {
-            cli.createArgument().setValue(arg);
+            cli.createArg().setValue(arg);
         }
 
         // add our user defined args (making sure they don't duplicate stdargs)
@@ -199,28 +186,18 @@ public class IkvmMavenMojo extends AbstractMojo
                               "and project.build.finalName in your POM.");
                 continue;
             }
-            cli.createArgument().setValue(arg);
+            cli.createArg().setValue(arg);
         }
 
         // add our output file
-        cli.createArgument().setValue("-out:" + artifactFile.getAbsolutePath());
-
-        // add our standard DLLs
-        List<String> stdDlls = new ArrayList<String>();
-        stdDlls.add("mscorlib.dll");
-        stdDlls.add("System.dll");
-        stdDlls.add("System.Core.dll");
-        for (String dll : stdDlls) {
-            cli.createArgument().setValue("-r:" + getDLLPath(dll));
-        }
+        cli.createArg().setValue("-out:" + artifactFile.getAbsolutePath());
 
         // add our DLLs
         for (String dll : dlls) {
-            if (stdDlls.contains(dll)) continue;
-            cli.createArgument().setValue("-r:" + getDLLPath(dll));
+            cli.createArg().setValue("-r:" + getDLLPath(dll));
         }
         for (Artifact dll : dllDepends) {
-            cli.createArgument().setValue("-r:" + dll.getFile().getAbsolutePath());
+            cli.createArg().setValue("-r:" + dll.getFile().getAbsolutePath());
         }
 
         // if we're in onlyCode mode, then unpack our jars into a temporary directory and delete
@@ -246,13 +223,13 @@ public class IkvmMavenMojo extends AbstractMojo
                     throw new MojoExecutionException("Error extracting classes from: " + depend, e);
                 }
             }
-            cli.createArgument().setValue("-recurse:" + codeDir.getAbsolutePath() + File.separator +
+            cli.createArg().setValue("-recurse:" + codeDir.getAbsolutePath() + File.separator +
                                           "*.class");
 
         } else {
             // otherwise just add our jar files to the argument list
             for (File depend : javaDepends) {
-                cli.createArgument().setValue(depend.getAbsolutePath());
+                cli.createArg().setValue(depend.getAbsolutePath());
             }
         }
 
@@ -310,11 +287,13 @@ public class IkvmMavenMojo extends AbstractMojo
     }
 
     private String getDLLPath (String dll) {
+    	getLog().debug("getDLL(): "+dll);
         // if the supplied DLL path is already absolute, just return it
         if (new File(dll).isAbsolute()) return dll;
         // if dllPath was set to a valid directory, use that
         if (dllPath.isDirectory()) return new File(dllPath, dll).getAbsolutePath();
         // otherwise just use the relative path and hope that things work
+        getLog().debug(" returned DLL and hope that things work: "+dll);
         return dll;
     }
 
