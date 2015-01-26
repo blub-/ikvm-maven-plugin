@@ -6,16 +6,16 @@
     <version>7</version>
   </parent>
 
-  <groupId>com.samskivert</groupId>
+  <groupId>net.sblock</groupId>
   <artifactId>ikvm-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.0</version>
 
   <name>IKVM Maven Plugin</name>
   <description>A collection of Java utilities.</description>
-  <url>http://github.com/samskivert/ikvm-maven-plugin</url>
+  <url>http://github.com/blub-/ikvm-maven-plugin</url>
   <issueManagement>
-    <url>http://github.com/samskivert/ikvm-maven-plugin/issues</url>
+    <url>http://github.com/blub-/ikvm-maven-plugin/issues</url>
   </issueManagement>
 
   <licenses>
@@ -27,17 +27,24 @@
   </licenses>
 
   <developers>
+    <!-- Original Developer -->
     <developer>
       <id>samskivert</id>
       <name>Michael Bayne</name>
       <email>mdb@samskivert.com</email>
     </developer>
+    <!-- Fork Developer --> 
+    <developer>
+      <id>blub-</id>
+      <name>sblock</name>
+      <email>github@sblock.net</email>
+    </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/samskivert/ikvm-maven-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:samskivert/ikvm-maven-plugin.git</developerConnection>
-    <url>http://github.com/samskivert/ikvm-maven-plugin/</url>
+    <connection>scm:git:git://github.com/blub-/ikvm-maven-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:blub-/ikvm-maven-plugin.git</developerConnection>
+    <url>http://github.com/blub-/ikvm-maven-plugin/</url>
   </scm>
 
   <properties>
