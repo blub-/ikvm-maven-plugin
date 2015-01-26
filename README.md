@@ -1,11 +1,11 @@
 # ikvm-maven-plugin
 
+# This plugin is a fork from samskivert/ikvm-maven-plugin.
+
 This Maven plugin runs IKVM on a collection of Java jar files (defined by the
 dependencies in the POM that includes this plugin).
 
-The primary itch it scratches is to generate DLLs for use by the iOS backend of
-the [PlayN] cross-platform game development library, but it should in theory be
-usable for incorporating IKVM into any Maven build.
+The primary itch it scratches is to generate DLLs for use by any Windows System. This branch was changed to work fine without Mono (Open Source Framework for .NET applications: http://www.mono-project.com/).
 
 It defines a `dll` packaging type and generates a `dll` artifact.
 
@@ -22,9 +22,8 @@ One must configure their IKVM installation location in Maven's global settings
           <!-- ikvmc.path specifies where to find ikvmc.exe. It defaults to:
                ${ikvm.path}/bin/ikvmc.exe -->
           <!-- <ikvmc.path>/path/to/ikvmc.exe</ikvmc.path> -->
-          <!-- dll.path specifies where to find the standard libraries. It defaults to:
-               /Developer/MonoTouch/usr/lib/mono/2.1
-               You can customize it to use some other Mono installation, or
+          <!-- dll.path specifies where to find the libraries.
+               You can customize it to use a specific dll source path, for e.g. a Mono installation, or
                leave it pointing to a non-existent directory to locate standard
                libraries via the built-in library search path. -->
           <!-- <dll.path>/path/to/mono/usr/lib/x.x</dll.path> -->
@@ -60,9 +59,13 @@ Once that's done, the following POM fragment demonstrates the use of this plugin
       </dependencies>
 
       <build>
+      <!-- other stuff like: -->
+      <directory>${project.basedir}/lib/ext/</directory>
+      <finalName>MyNewIKVMGenerated.dll</finalName>
+      <!-- end of other stuff -->
         <plugins>
           <plugin>
-            <groupId>com.samskivert</groupId>
+            <groupId>net.sblock</groupId>
             <artifactId>ikvm-maven-plugin</artifactId>
             <version>1.0</version>
             <!-- this lets Maven know that we define 'packaging: dll' -->
@@ -70,13 +73,13 @@ Once that's done, the following POM fragment demonstrates the use of this plugin
             <configuration>
               <ikvmArgs>
                 <ikvmArg>-debug</ikvmArg>
+                <!-- versionnumber of the DLL-file to generate -->
+                <ikvmArg>-version:1.1.5</ikvmArg>
               </ikvmArgs>
-              <!-- these are additional referenced DLLs (beyond mscorlib, System and System.Core) -->
+              <!-- these are additional referenced DLLs in special paths, etc. 
+              Each of them is added with ikvmcs "-r" argument.-->
               <dlls>
-                <dll>System.Data.dll</dll>
-                <dll>OpenTK.dll</dll>
-                <dll>monotouch.dll</dll>
-                <dll>Mono.Data.Sqlite.dll</dll>
+                <dll>MyAdditionalDLL.dll</dll>
               </dlls>
             </configuration>
           </plugin>
@@ -85,14 +88,11 @@ Once that's done, the following POM fragment demonstrates the use of this plugin
     </project>
 
 On Windows, the plugin will execute `ikvmc.exe` directly. On non-Windows
-platforms, the plugin expects `mono` to be in your path on the command line.
-You can force the use of Mono even on Windows by adding
-`<force.mono>true</force.mono>` in `<configuration>`.
+platforms you should use samskiverts plugin. 
 
 ## License
 
 ikvm-maven-plugin is released under the New BSD License, which can be found in
 the [LICENSE] file.
 
-[PlayN]: http://code.google.com/p/playn
 [LICENSE]: https://github.com/samskivert/ikvm-maven-plugin/blob/master/LICENSE
