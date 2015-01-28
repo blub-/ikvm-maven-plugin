@@ -1,6 +1,7 @@
 //
 // ikvm-maven-plugin - generates C# DLL from Java code via IKVM
 // http://github.com/samskivert/ikvm-maven-plugin/blob/master/LICENSE
+// fork: https://github.com/blub-/ikvm-maven-plugin
 
 package com.samskivert;
 
@@ -35,20 +36,21 @@ import org.apache.maven.project.MavenProject;
 public class IkvmMavenMojo extends AbstractMojo
 {
     /**
-     * Location of the IKVM installation.
-     * @parameter expression="${ikvm.path}"
+     * Location of the IKVM installation. Default: {@code ${env.IKVM_PATH}}
+     * #@parameter expression="${ikvm.path}" defaultValue="${env.IKVM_PATH}"
+     * @parameter (property="${ikvm.path}", defaultValue="${env.IKVM_PATH}")
      */
     public File ikvmPath;
 
     /**
      * Location of the {@code ikvmc.exe} executable. Default: {@code ${ikvm.path}/bin/ikvmc.exe}.
-     * @parameter expression="${ikvmc.path}"
+     * @parameter expression="${ikvmc.path}" 
      */
     public File ikvmcPath;
 
     /**
      * The location of the standard library DLLs.
-     * @parameter expression="${dll.path}" default-value="/Developer/MonoTouch/usr/lib/mono/2.1"
+     * @parameter expression="${dll.path}" 
      */
     public File dllPath;
 
