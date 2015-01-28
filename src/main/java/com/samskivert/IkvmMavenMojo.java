@@ -37,8 +37,7 @@ public class IkvmMavenMojo extends AbstractMojo
 {
     /**
      * Location of the IKVM installation. Default: {@code ${env.IKVM_PATH}}
-     * #@parameter expression="${ikvm.path}" defaultValue="${env.IKVM_PATH}"
-     * @parameter (property="${ikvm.path}", defaultValue="${env.IKVM_PATH}")
+     * @parameter expression="${ikvm.path}"
      */
     public File ikvmPath;
 
@@ -128,10 +127,19 @@ public class IkvmMavenMojo extends AbstractMojo
                     throw new MojoExecutionException(
                         "Unable to create stub artifact file: " + artifactFile, ioe);
                 }
+                return;
             } else {
-                getLog().warn("ikvm.path is not set. Skipping IKVM build.");
+            	String envPath = System.getenv("IKVM_PATH");
+            	getLog().debug("%IKVM_PATH% environment variable is: "+envPath);
+            	if(envPath!=null){
+            		getLog().info("ikvm.path by environment variable: "+envPath);
+            		ikvmPath=new File(envPath);
+            	} else {
+	                getLog().info("ikvm.path is not set. Skipping IKVM build.");
+	                return;
+            	}
             }
-            return;
+            
         }
 
         // sanity checks
